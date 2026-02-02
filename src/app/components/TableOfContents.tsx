@@ -53,13 +53,13 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
     <motion.aside
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
-      className="hidden lg:block sticky top-24 w-64 pl-8"
+      className="hidden lg:block fixed right-4 top-24 w-56 bg-white dark:bg-[#1a1a1a] rounded-xl shadow-lg border border-gray-100 dark:border-gray-800 p-4"
     >
-      <div className="space-y-4">
-        <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+      <div className="space-y-3 max-h-[70vh] overflow-y-auto">
+        <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
           目录
         </h3>
-        <nav className="space-y-2">
+        <nav className="space-y-0.5">
           {headings.map((heading) => (
             <motion.a
               key={heading.id}
@@ -67,13 +67,13 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
               onClick={(e) => handleClick(e, heading.id)}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: heading.index * 0.05 }}
-              className={`block text-sm py-1.5 px-3 rounded-lg transition-all duration-200 ${
+              transition={{ delay: heading.index * 0.03 }}
+              className={`block text-xs py-1 px-2 rounded-md transition-all duration-200 truncate ${
                 activeId === heading.id
-                  ? "bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 font-medium"
-                  : "text-gray-600 dark:text-gray-400 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-gray-50 dark:hover:bg-gray-800"
+                  ? "bg-amber-500 text-white font-medium"
+                  : "text-gray-600 dark:text-gray-400 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20"
               }`}
-              style={{ paddingLeft: `${heading.level * 12}px` }}
+              style={{ paddingLeft: `${heading.level * 10}px` }}
             >
               {heading.text}
             </motion.a>

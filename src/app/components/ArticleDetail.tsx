@@ -158,14 +158,13 @@ export default function ArticleDetail() {
 
   return (
     <div className='max-w-6xl mx-auto px-4 md:px-6 lg:px-8'>
-      <div className='flex gap-12'>
-        {/* Main Content */}
-        <div className='flex-1 max-w-4xl'>
-          <motion.article
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
+      {/* Main Content */}
+      <div className='max-w-4xl lg:mr-64'>
+        <motion.article
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
             {/* Back Button */}
             <motion.button
               initial={{ opacity: 0, x: -20 }}
@@ -410,7 +409,7 @@ export default function ArticleDetail() {
         </div>
 
         {/* Table of Contents - Desktop */}
-        {headings.length > 0 && <TableOfContents headings={headings} />}
+        {headings.length > 0 && <div className="w-56"></div>}
       </div>
     </div>
   );
