@@ -12,10 +12,11 @@ import ArticleEditor from "@/app/components/admin/ArticleEditor";
 import ImageUploader from "@/app/components/admin/ImageUploader";
 import StatsPanel from "@/app/components/admin/StatsPanel";
 import ProtectedRoute from "@/app/components/ProtectedRoute";
+import AdminProtectedRoute from "@/app/components/AdminProtectedRoute";
 
 function ImageUploaderWrapper() {
   return (
-<ProtectedRoute fallback={<Navigate to="/login" replace />}>
+    <ProtectedRoute fallback={<Navigate to="/login" replace />}>
       <ImageUploader />
     </ProtectedRoute>
   );
@@ -53,12 +54,40 @@ export const router = createHashRouter([
     Component: Root,
     children: [
       { index: true, Component: Dashboard },
-      { path: "list", Component: ArticleList },
-      { path: "new", Component: ArticleEditor },
-      { path: "edit/:id", Component: ArticleEditor },
-      { path: "stats", Component: StatsPanel },
-      { path: "images", Component: ImageUploaderWrapper },
-      { path: "*", Component: NotFound },
+      { 
+        path: "list", 
+        element: (
+          <AdminProtectedRoute>
+            <ArticleList />
+          </AdminProtectedRoute>
+        )
+      },
+      { 
+        path: "new", 
+        element: (
+          <AdminProtectedRoute>
+            <ArticleEditor />
+          </AdminProtectedRoute>
+        )
+      },
+      { 
+        path: "edit/:id", 
+        element: (
+          <AdminProtectedRoute>
+            <ArticleEditor />
+          </AdminProtectedRoute>
+        )
+      },
+      { 
+        path: "stats", 
+        element: (
+          <AdminProtectedRoute>
+            <StatsPanel />
+          </AdminProtectedRoute>
+        )
+      },
+      { path: "images", element: <ImageUploaderWrapper /> },
+      { path: "*", element: <NotFound /> },
     ],
   },
 ]);

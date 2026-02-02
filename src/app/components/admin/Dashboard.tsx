@@ -5,9 +5,22 @@ import { useAuth } from "@/app/contexts/AuthContext";
 import { getAllArticles } from "@/services/articleService";
 import type { Article } from "@/types/database";
 import { useState, useEffect } from "react";
+import { useAdminPassword } from "@/hooks/useAdminPassword";
+import AdminLogin from "./AdminLogin";
+
+const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || "admin123";
 
 export default function Dashboard() {
   const { user, signOut: authSignOut } = useAuth();
+  const {
+    isAuthenticated,
+    loading: passwordLoading,
+    password,
+    setPassword,
+    error,
+    handleLogin,
+    handleLogout,
+  } = useAdminPassword(ADMIN_PASSWORD);
   const navigate = useNavigate();
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
@@ -37,9 +50,22 @@ export default function Dashboard() {
   }, []);
 
   const handleSignOut = async () => {
+    handleLogout();
     await authSignOut();
     navigate("/");
   };
+
+  if (passwordLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-amber-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <AdminLogin password={password} setPassword={setPassword} error={error} handleLogin={handleLogin} />;
+  }
 
   return (
     <div className="min-h-screen bg-[#faf9f7] dark:bg-[#1a1a1a]">
