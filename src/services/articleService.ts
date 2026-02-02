@@ -91,7 +91,7 @@ export async function createArticle(article: {
 }): Promise<Article> {
   const { data, error } = await supabase
     .from('articles')
-    .insert(article)
+    .insert({ ...article, user_id: null })
     .select()
     .single();
 

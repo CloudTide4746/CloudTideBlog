@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS articles (
   category text NOT NULL,
   image text NOT NULL,
   tags text[] DEFAULT '{}',
-  user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE,
+  user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE SET NULL,
   created_at timestamptz DEFAULT now(),
   updated_at timestamptz DEFAULT now()
 );
@@ -75,9 +75,9 @@ DROP POLICY IF EXISTS "用户可以删除自己的收藏" ON bookmarks;
 
 -- Articles 策略
 CREATE POLICY "允许所有人查看文章" ON articles FOR SELECT USING (true);
-CREATE POLICY "允许认证用户创建文章" ON articles FOR INSERT WITH CHECK (auth.uid() = user_id);
-CREATE POLICY "允许认证用户更新文章" ON articles FOR UPDATE USING (auth.uid() = user_id);
-CREATE POLICY "允许认证用户删除文章" ON articles FOR DELETE USING (auth.uid() = user_id);
+CREATE POLICY "允许所有人创建文章" ON articles FOR INSERT WITH CHECK (true);
+CREATE POLICY "允许所有人更新文章" ON articles FOR UPDATE WITH CHECK (true);
+CREATE POLICY "允许所有人删除文章" ON articles FOR DELETE USING (true);
 
 -- Article likes 策略（公开访问）
 CREATE POLICY "允许所有人查看点赞" ON article_likes FOR SELECT USING (true);
@@ -93,18 +93,5 @@ CREATE POLICY "允许所有人查看收藏数" ON bookmarks FOR SELECT USING (tr
 CREATE POLICY "用户可以创建自己的收藏" ON bookmarks FOR INSERT WITH CHECK (auth.uid() = user_id);
 CREATE POLICY "用户可以删除自己的收藏" ON bookmarks FOR DELETE USING (auth.uid() = user_id);
 
--- 创建触发器函数，自动设置 user_id
-CREATE OR REPLACE FUNCTION set_user_id()
-RETURNS TRIGGER AS $$
-BEGIN
-  NEW.user_id = auth.uid();
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
--- 创建触发器
-DROP TRIGGER IF EXISTS set_user_id_trigger ON articles;
-CREATE TRIGGER set_user_id_trigger
-  BEFORE INSERT ON articles
-  FOR EACH ROW
-  EXECUTE FUNCTION set_user_id();
+-- 注意：由于现在允许所有人创建文章，不需要触发器自动设置 user_id
+-- 如果将来需要限制只有认证用户才能创建文章，可以恢复触发器和相关策略
