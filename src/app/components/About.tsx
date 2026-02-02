@@ -1,14 +1,13 @@
 import { motion } from "motion/react";
-import { Mail, Github, Twitter, Heart, Coffee, User, LucideIcon } from "lucide-react";
+import { Mail, Github, Twitter, Heart, Coffee, User, LucideIcon, MessageCircle, PlayCircle } from "lucide-react";
 import { personalInfo } from "@/config/personalInfo";
 
-// Dynamic icon map
 const iconMap: Record<string, LucideIcon> = {
   Mail,
   Github,
   Twitter,
-  MessageCircle: Coffee,
-  PlayCircle: Twitter,
+  MessageCircle,
+  PlayCircle,
 };
 
 export default function About() {

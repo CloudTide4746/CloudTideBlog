@@ -244,32 +244,67 @@ export default function Home() {
         <div className="absolute -bottom-8 -right-8 w-20 h-20 rounded-full bg-gradient-to-br from-purple-400/20 to-pink-400/20 blur-xl" />
 
         <Link to={`/article/${articles[0].id}`} className="group block">
-          <div className="relative rounded-2xl overflow-hidden bg-white dark:bg-[#242424] shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100 dark:border-gray-800">
-            {/* Featured badge with pulse effect */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.5 }}
-              className="absolute top-6 left-6 z-10 bg-gradient-to-r from-amber-500 to-rose-500 text-white px-4 py-1.5 rounded-full text-sm font-medium shadow-lg"
-            >
-              <div className="flex items-center gap-2">
-                <Star className="w-4 h-4 fill-white" />
-                精选文章
-              </div>
-            </motion.div>
-
+          <div className="relative rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100 dark:border-gray-800">
+            {/* Artistic gradient background */}
             <div className="relative h-[400px] md:h-[500px] overflow-hidden">
-              <motion.img
-                src={articles[0].image}
-                alt={articles[0].title}
-                className="w-full h-full object-cover"
-                whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-br from-amber-400 via-rose-500 to-purple-600 dark:from-amber-900 dark:via-rose-900 dark:to-purple-900"
+                animate={{
+                  backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+                }}
+                transition={{
+                  duration: 15,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                style={{ backgroundSize: "200% 200%" }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+              
+              {/* Geometric patterns */}
+              <svg className="absolute inset-0 w-full h-full opacity-10" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <pattern id="hexagons" width="56" height="100" patternUnits="userSpaceOnUse" patternTransform="scale(2)">
+                    <path d="M28 66L0 50L0 16L28 0L56 16L56 50L28 66" fill="none" stroke="currentColor" strokeWidth="1"/>
+                  </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#hexagons)" className="text-white" />
+              </svg>
+              
+              {/* Floating decorative circles */}
+              <motion.div
+                animate={{
+                  y: [0, -20, 0],
+                  scale: [1, 1.1, 1],
+                }}
+                transition={{ duration: 6, repeat: Infinity }}
+                className="absolute top-20 right-20 w-32 h-32 rounded-full bg-white/10 dark:bg-white/5 blur-2xl"
+              />
+              <motion.div
+                animate={{
+                  y: [0, 20, 0],
+                  scale: [1, 1.2, 1],
+                }}
+                transition={{ duration: 8, repeat: Infinity, delay: 1 }}
+                className="absolute bottom-32 left-16 w-24 h-24 rounded-full bg-white/10 dark:bg-white/5 blur-xl"
+              />
+              
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+
+              {/* Featured badge with pulse effect */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.5 }}
+                className="absolute top-6 left-6 z-10 bg-white/20 backdrop-blur-md text-white px-4 py-1.5 rounded-full text-sm font-medium shadow-lg border border-white/20"
+              >
+                <div className="flex items-center gap-2">
+                  <Star className="w-4 h-4 fill-white" />
+                  精选文章
+                </div>
+              </motion.div>
 
               {/* Content overlay */}
-              <div className="absolute bottom-0 left-0 right-0 p-8 md:p-12 text-white">
+              <div className="absolute bottom-0 left:0 right-0 p-8 md:p-12 text-white">
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}

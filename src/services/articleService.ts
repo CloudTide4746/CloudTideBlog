@@ -153,21 +153,24 @@ export async function searchArticles(query: string): Promise<Article[]> {
 }
 
 /**
- * Toggle like status
+ * Toggle like status (no login required)
  */
-export async function toggleLike(articleId: string, userId: string): Promise<boolean> {
+export async function toggleLike(articleId: string): Promise<boolean> {
+  const ipAddress = 'anonymous';
+  const userAgent = navigator.userAgent;
+
   const { data: existing } = await supabase
-    .from('likes')
+    .from('article_likes')
     .select('id')
     .eq('article_id', articleId)
-    .eq('user_id', userId)
+    .eq('ip_address', ipAddress)
     .single();
 
   if (existing) {
-    await supabase.from('likes').delete().eq('id', existing.id);
+    await supabase.from('article_likes').delete().eq('id', existing.id);
     return false;
   } else {
-    await supabase.from('likes').insert({ article_id: articleId, user_id: userId });
+    await supabase.from('article_likes').insert({ article_id: articleId, ip_address: ipAddress, user_agent: userAgent });
     return true;
   }
 }
@@ -197,22 +200,23 @@ export async function toggleBookmark(articleId: string, userId: string): Promise
  */
 export async function getArticleStats(articleId: string, userId?: string) {
   const { count: likesCount } = await supabase
-    .from('likes')
+    .from('article_likes')
     .select('*', { count: 'exact', head: true })
     .eq('article_id', articleId);
 
   let isLiked = false;
   let isBookmarked = false;
 
-  if (userId) {
-    const { data: like } = await supabase
-      .from('likes')
-      .select('id')
-      .eq('article_id', articleId)
-      .eq('user_id', userId)
-      .single();
-    isLiked = !!like;
+  const ipAddress = 'anonymous';
+  const { data: like } = await supabase
+    .from('article_likes')
+    .select('id')
+    .eq('article_id', articleId)
+    .eq('ip_address', ipAddress)
+    .single();
+  isLiked = !!like;
 
+  if (userId) {
     const { data: bookmark } = await supabase
       .from('bookmarks')
       .select('id')

@@ -55,14 +55,8 @@ export default function ArticleDetail() {
   }, [id, user]);
 
   const handleLike = async () => {
-    if (!user) {
-      // You might want to show a toast or modal here instead of alert
-      alert("请先登录");
-      return;
-    }
     if (!article) return;
 
-    // Optimistic update
     const newLiked = !stats.isLiked;
     setStats((prev) => ({
       ...prev,
@@ -71,9 +65,8 @@ export default function ArticleDetail() {
     }));
 
     try {
-      await toggleLike(article.id, user.id);
+      await toggleLike(article.id);
     } catch (err) {
-      // Revert on error
       setStats((prev) => ({
         ...prev,
         isLiked: !newLiked,
