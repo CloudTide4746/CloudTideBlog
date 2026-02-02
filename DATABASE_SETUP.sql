@@ -56,6 +56,23 @@ ALTER TABLE article_likes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE comments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE bookmarks ENABLE ROW LEVEL SECURITY;
 
+-- 删除已存在的策略
+DROP POLICY IF EXISTS "允许所有人查看文章" ON articles;
+DROP POLICY IF EXISTS "允许认证用户创建文章" ON articles;
+DROP POLICY IF EXISTS "允许认证用户更新文章" ON articles;
+DROP POLICY IF EXISTS "允许认证用户删除文章" ON articles;
+
+DROP POLICY IF EXISTS "允许所有人查看点赞" ON article_likes;
+DROP POLICY IF EXISTS "允许所有人点赞" ON article_likes;
+DROP POLICY IF EXISTS "允许所有人取消点赞" ON article_likes;
+
+DROP POLICY IF EXISTS "允许所有人查看评论" ON comments;
+DROP POLICY IF EXISTS "允许所有人创建评论" ON comments;
+
+DROP POLICY IF EXISTS "允许所有人查看收藏数" ON bookmarks;
+DROP POLICY IF EXISTS "用户可以创建自己的收藏" ON bookmarks;
+DROP POLICY IF EXISTS "用户可以删除自己的收藏" ON bookmarks;
+
 -- Articles 策略
 CREATE POLICY "允许所有人查看文章" ON articles FOR SELECT USING (true);
 CREATE POLICY "允许认证用户创建文章" ON articles FOR INSERT WITH CHECK (auth.uid() = user_id);
