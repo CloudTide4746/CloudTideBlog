@@ -40,35 +40,48 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
   }, [headings]);
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
-    e.preventDefault();
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   };
 
+  const handleScrollToTop = () => {
+    window.scrollTo({ behavior: "smooth", top: 0 });
+  };
+
   if (headings.length === 0) return null;
 
   return (
     <motion.aside
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3 }}
       className="hidden lg:block fixed right-4 top-24 w-56 bg-white dark:bg-[#1a1a1a] rounded-xl shadow-lg border border-gray-100 dark:border-gray-800 p-4"
     >
       <div className="space-y-3 max-h-[70vh] overflow-y-auto">
-        <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
-          目录
-        </h3>
+        <div className="flex items-center justify-between mb-2">
+          <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+            目录
+          </h3>
+          <motion.button
+            onClick={handleScrollToTop}
+            whileHover={{ opacity: 0.7 }}
+            className="text-xs text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300"
+          >
+            回到顶部
+          </motion.button>
+        </div>
         <nav className="space-y-0.5">
           {headings.map((heading) => (
-            <motion.a
+            <motion.div
               key={heading.id}
-              href={`#${heading.id}`}
               onClick={(e) => handleClick(e, heading.id)}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: heading.index * 0.03 }}
-              className={`block text-xs py-1 px-2 rounded-md transition-all duration-200 truncate ${
+              exit={{ opacity: 0 }}
+              transition={{ delay: heading.index * 0.03, duration: 0.2 }}
+              className={`block text-xs py-1 px-2 rounded-md cursor-pointer transition-all duration-200 truncate ${
                 activeId === heading.id
                   ? "bg-amber-500 text-white font-medium"
                   : "text-gray-600 dark:text-gray-400 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20"
@@ -76,7 +89,7 @@ export default function TableOfContents({ headings }: TableOfContentsProps) {
               style={{ paddingLeft: `${heading.level * 10}px` }}
             >
               {heading.text}
-            </motion.a>
+            </motion.div>
           ))}
         </nav>
       </div>

@@ -1,14 +1,10 @@
 import ReactMarkdown from "react-markdown";
 import rehypeSlug from "rehype-slug";
-import rehypeAutolinkHeadings from "rehype-autolink-headings";
 
 export default function MarkdownContent({ content }: { content: string }) {
   return (
     <ReactMarkdown
-      rehypePlugins={[
-        rehypeSlug,
-        [rehypeAutolinkHeadings, { behavior: "wrap" }],
-      ]}
+      rehypePlugins={[rehypeSlug]}
       components={{
         h1: ({ id, children }) => (
           <h1

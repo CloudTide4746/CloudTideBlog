@@ -73,7 +73,6 @@ export default function ArticleDetail() {
         const data = await getArticleById(id);
         setArticle(data);
 
-        // Load stats
         const statsData = await getArticleStats(id, user?.id);
         setStats(statsData);
       } catch (error) {
@@ -85,7 +84,7 @@ export default function ArticleDetail() {
     loadArticle();
   }, [id, user]);
 
-  const handleLike = async () => {
+  const handleLike = async function() {
     if (!article) return;
 
     const newLiked = !stats.isLiked;
@@ -106,7 +105,7 @@ export default function ArticleDetail() {
     }
   };
 
-  const handleBookmark = async () => {
+  const handleBookmark = async function() {
     if (!user) {
       alert("请先登录");
       return;
@@ -191,30 +190,31 @@ export default function ArticleDetail() {
             {/* Mobile TOC */}
             {showToc && (
               <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
                 className='lg:hidden bg-gray-50 dark:bg-gray-800 rounded-lg p-4 mb-6'
               >
                 <nav className='space-y-2'>
                   {headings.map((heading) => (
-                    <a
+                    <motion.div
                       key={heading.id}
-                      href={`#${heading.id}`}
-                      className={`block text-sm py-1.5 px-3 rounded-lg ${
-                        'text-gray-600 dark:text-gray-400 hover:text-amber-600 dark:hover:text-amber-400'
-                      }`}
-                      style={{ paddingLeft: `${heading.level * 12}px` }}
-                      onClick={(e) => {
-                        e.preventDefault();
+                      onClick={() => {
                         const element = document.getElementById(heading.id);
                         if (element) {
                           element.scrollIntoView({ behavior: 'smooth', block: 'start' });
                           setShowToc(false);
                         }
                       }}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: heading.index * 0.03, duration: 0.2 }}
+                      className='block text-sm py-1.5 px-3 rounded-lg text-gray-600 dark:text-gray-400 hover:text-amber-600 dark:hover:text-amber-400 cursor-pointer'
+                      style={{ paddingLeft: `${heading.level * 12}px` }}
                     >
                       {heading.text}
-                    </a>
+                    </motion.div>
                   ))}
                 </nav>
               </motion.div>
@@ -275,21 +275,6 @@ export default function ArticleDetail() {
                 <span>{article.date}</span>
               </motion.div>
             </header>
-
-            {/* Featured Image */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.6 }}
-              className='mb-12 rounded-2xl overflow-hidden shadow-2xl relative group'
-            >
-              <img
-                src={article.image}
-                alt={article.title}
-                className='w-full h-[500px] object-cover'
-              />
-              <div className='absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300' />
-            </motion.div>
 
             {/* Interaction Bar */}
             <motion.div
@@ -408,9 +393,8 @@ export default function ArticleDetail() {
           </motion.article>
         </div>
 
-        {/* Table of Contents - Desktop */}
-        {headings.length > 0 && <div className="w-56"></div>}
-      </div>
-    </div>
-  );
-}
+         {/* Table of Contents - Desktop */}
+         {headings.length > 0 && <TableOfContents headings={headings} />}
+       </div>
+    );
+  }

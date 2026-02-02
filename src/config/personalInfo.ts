@@ -5,7 +5,7 @@ export const personalInfo: PersonalInfo = {
   title: "晚风拾云的博客",
   description: "漫漫长路，原作清风伴君途",
   keywords: "博客, 文学, 编程, 生活记录, 前端开发",
-  avatar_url: "/avatar.jpg",
+  avatar_url: "/CloudTideBlog/avatar.jpg",
   bio: "一个对前端技术保持热情的大学生，就读于北京邮电大学2025级电子信息类",
   about: `你好！我是一名热爱生活的文字工作者和前端开发者。在代码与文字之间，我找到了表达自我的最佳方式。
 
