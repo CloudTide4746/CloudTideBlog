@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS articles (
   category text NOT NULL,
   image text NOT NULL,
   tags text[] DEFAULT '{}',
-  user_id uuid REFERENCES auth.users(id) ON DELETE CASCADE SET NULL,
+  user_id uuid REFERENCES auth.users(id) ON DELETE SET NULL,
   created_at timestamptz DEFAULT now(),
   updated_at timestamptz DEFAULT now()
 );
