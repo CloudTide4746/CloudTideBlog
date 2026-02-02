@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from "react-router";
+import { createHashRouter, Navigate } from "react-router";
 import Root from "@/app/components/Root";
 import Home from "@/app/components/Home";
 import ArticleDetail from "@/app/components/ArticleDetail";
@@ -21,7 +21,7 @@ function ImageUploaderWrapper() {
   );
 }
 
-export const router = createBrowserRouter([
+export const router = createHashRouter([
   {
     path: "/",
     Component: Root,

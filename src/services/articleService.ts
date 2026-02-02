@@ -87,6 +87,7 @@ export async function createArticle(article: {
   read_time: string;
   category: string;
   image: string;
+  tags?: string[];
 }): Promise<Article> {
   const { data, error } = await supabase
     .from('articles')
@@ -115,6 +116,7 @@ export async function updateArticle(
     read_time: string;
     category: string;
     image: string;
+    tags?: string[];
   }>
 ): Promise<Article> {
   const { data, error } = await supabase
@@ -130,6 +132,101 @@ export async function updateArticle(
   }
 
   return data;
+}
+
+/**
+ * Search articles
+ */
+export async function searchArticles(query: string): Promise<Article[]> {
+  const { data, error } = await supabase
+    .from('articles')
+    .select('*')
+    .or(`title.ilike.%${query}%,excerpt.ilike.%${query}%,content.ilike.%${query}%`)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error searching articles:', error);
+    throw error;
+  }
+
+  return data || [];
+}
+
+/**
+ * Toggle like status
+ */
+export async function toggleLike(articleId: string, userId: string): Promise<boolean> {
+  const { data: existing } = await supabase
+    .from('likes')
+    .select('id')
+    .eq('article_id', articleId)
+    .eq('user_id', userId)
+    .single();
+
+  if (existing) {
+    await supabase.from('likes').delete().eq('id', existing.id);
+    return false;
+  } else {
+    await supabase.from('likes').insert({ article_id: articleId, user_id: userId });
+    return true;
+  }
+}
+
+/**
+ * Toggle bookmark status
+ */
+export async function toggleBookmark(articleId: string, userId: string): Promise<boolean> {
+  const { data: existing } = await supabase
+    .from('bookmarks')
+    .select('id')
+    .eq('article_id', articleId)
+    .eq('user_id', userId)
+    .single();
+
+  if (existing) {
+    await supabase.from('bookmarks').delete().eq('id', existing.id);
+    return false;
+  } else {
+    await supabase.from('bookmarks').insert({ article_id: articleId, user_id: userId });
+    return true;
+  }
+}
+
+/**
+ * Get article stats (likes, bookmarks)
+ */
+export async function getArticleStats(articleId: string, userId?: string) {
+  const { count: likesCount } = await supabase
+    .from('likes')
+    .select('*', { count: 'exact', head: true })
+    .eq('article_id', articleId);
+
+  let isLiked = false;
+  let isBookmarked = false;
+
+  if (userId) {
+    const { data: like } = await supabase
+      .from('likes')
+      .select('id')
+      .eq('article_id', articleId)
+      .eq('user_id', userId)
+      .single();
+    isLiked = !!like;
+
+    const { data: bookmark } = await supabase
+      .from('bookmarks')
+      .select('id')
+      .eq('article_id', articleId)
+      .eq('user_id', userId)
+      .single();
+    isBookmarked = !!bookmark;
+  }
+
+  return {
+    likesCount: likesCount || 0,
+    isLiked,
+    isBookmarked
+  };
 }
 
 /**

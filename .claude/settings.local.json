@@ -14,7 +14,8 @@
       "Bash(npm run build)",
       "Bash(npx tsc:*)",
       "Bash(powershell:*)",
-      "Bash(del \"C:\\\\Users\\\\31338\\\\Desktop\\\\myblog\\\\src\\\\app\\\\components\\\\admin\\\\Dashboard.tsx\")"
+      "Bash(del \"C:\\\\Users\\\\31338\\\\Desktop\\\\myblog\\\\src\\\\app\\\\components\\\\admin\\\\Dashboard.tsx\")",
+      "Bash(tree:*)"
     ]
   }
 }

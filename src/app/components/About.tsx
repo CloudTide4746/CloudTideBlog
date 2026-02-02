@@ -1,5 +1,15 @@
 import { motion } from "motion/react";
-import { Mail, Github, Twitter, Heart, Coffee, Pen } from "lucide-react";
+import { Mail, Github, Twitter, Heart, Coffee, User, LucideIcon } from "lucide-react";
+import { personalInfo } from "@/config/personalInfo";
+
+// Dynamic icon map
+const iconMap: Record<string, LucideIcon> = {
+  Mail,
+  Github,
+  Twitter,
+  MessageCircle: Coffee,
+  PlayCircle: Twitter,
+};
 
 export default function About() {
   return (
@@ -15,16 +25,20 @@ export default function About() {
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ duration: 0.5, delay: 0.2, type: "spring" }}
-          className="w-32 h-32 mx-auto mb-8 rounded-full bg-gradient-to-br from-amber-200 to-rose-200 dark:from-amber-900/40 dark:to-rose-900/40 flex items-center justify-center border-4 border-white dark:border-gray-800 shadow-xl"
+          className="w-32 h-32 mx-auto mb-8 rounded-full overflow-hidden border-4 border-white dark:border-gray-800 shadow-xl"
         >
-          <Pen className="w-16 h-16 text-amber-600 dark:text-amber-400" />
+          <img
+            src={personalInfo.avatar_url}
+            alt={personalInfo.name}
+            className="w-full h-full object-cover"
+          />
         </motion.div>
 
         <h1 className="text-4xl md:text-5xl font-serif mb-4 text-gray-900 dark:text-gray-100">
-          关于我
+          {personalInfo.name}
         </h1>
         <p className="text-gray-600 dark:text-gray-400 text-lg">
-          一个热爱文字与代码的创作者
+          {personalInfo.bio}
         </p>
       </motion.section>
 
@@ -40,15 +54,9 @@ export default function About() {
           我的故事
         </h2>
         <div className="space-y-4 text-gray-600 dark:text-gray-400 leading-relaxed">
-          <p>
-            你好！我是一名热爱生活的文字工作者和前端开发者。在代码与文字之间，我找到了表达自我的最佳方式。
-          </p>
-          <p>
-            这个博客是我记录生活、分享思考的小天地。我相信，每一个平凡的日子里都藏着诗意，每一次键盘的敲击都在编织着故事。
-          </p>
-          <p>
-            我喜欢用文字捕捉生活中的美好瞬间，也热衷于探索最新的前端技术。在这里，文艺与技术并不矛盾，它们共同构成了我的世界。
-          </p>
+          {personalInfo.about.split('\n\n').map((paragraph, index) => (
+            <p key={index}>{paragraph}</p>
+          ))}
         </div>
       </motion.section>
 
@@ -63,14 +71,7 @@ export default function About() {
           我的兴趣
         </h2>
         <div className="grid md:grid-cols-3 gap-4">
-          {[
-            { icon: "📚", title: "阅读", desc: "在书海中遨游" },
-            { icon: "✍️", title: "写作", desc: "用文字记录生活" },
-            { icon: "💻", title: "编程", desc: "用代码创造美好" },
-            { icon: "🎨", title: "设计", desc: "追求视觉之美" },
-            { icon: "☕", title: "咖啡", desc: "享受慢生活" },
-            { icon: "🌿", title: "自然", desc: "在山川中寻找灵感" },
-          ].map((interest, index) => (
+          {personalInfo.interests.map((interest, index) => (
             <motion.div
               key={interest.title}
               initial={{ opacity: 0, scale: 0.9 }}
@@ -83,9 +84,11 @@ export default function About() {
               <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-1">
                 {interest.title}
               </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                {interest.desc}
-              </p>
+              {interest.description && (
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  {interest.description}
+                </p>
+              )}
             </motion.div>
           ))}
         </div>
@@ -104,25 +107,21 @@ export default function About() {
         <p className="text-center text-gray-600 dark:text-gray-400 mb-6">
           欢迎与我交流，分享你的想法和故事
         </p>
-        <div className="flex justify-center gap-4">
-          {[
-            { icon: Mail, label: "邮箱", color: "hover:text-blue-600" },
-            { icon: Github, label: "GitHub", color: "hover:text-gray-900 dark:hover:text-gray-100" },
-            { icon: Twitter, label: "Twitter", color: "hover:text-sky-500" },
-          ].map((social, index) => (
-            <motion.button
-              key={social.label}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 + index * 0.1 }}
-              whileHover={{ scale: 1.1, y: -5 }}
-              whileTap={{ scale: 0.95 }}
-              className={`p-4 rounded-full bg-white dark:bg-[#242424] shadow-md ${social.color} transition-all border border-gray-200 dark:border-gray-700`}
-              aria-label={social.label}
-            >
-              <social.icon className="w-5 h-5" />
-            </motion.button>
-          ))}
+        <div className="flex justify-center gap-4 flex-wrap">
+          {personalInfo.social_links.map((social, index) => {
+            const Icon = iconMap[social.icon] || User;
+            return (
+              <a
+                key={social.label}
+                href={social.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-4 rounded-full bg-white dark:bg-[#242424] shadow-md text-gray-700 dark:text-gray-300 hover:text-amber-600 dark:hover:text-amber-400 transition-all border border-gray-200 dark:border-gray-700"
+              >
+                <Icon className="w-5 h-5" />
+              </a>
+            );
+          })}
         </div>
       </motion.section>
 
@@ -134,7 +133,7 @@ export default function About() {
         className="text-center py-8"
       >
         <blockquote className="text-xl md:text-2xl font-serif text-gray-700 dark:text-gray-300 italic">
-          "生活不止眼前的苟且，还有诗和远方。"
+          "{personalInfo.motto}"
         </blockquote>
       </motion.div>
     </div>

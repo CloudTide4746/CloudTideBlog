@@ -7,6 +7,7 @@ export interface Article {
   read_time: string;
   category: string;
   image: string;
+  tags?: string[];
   created_at?: string;
   updated_at?: string;
 }
@@ -19,6 +20,7 @@ export interface ArticleInsert {
   read_time: string;
   category: string;
   image: string;
+  tags?: string[];
 }
 
 export interface Comment {
@@ -26,5 +28,19 @@ export interface Comment {
   article_id: string;
   author_name: string;
   content: string;
+  created_at: string;
+}
+
+export interface Like {
+  id: string;
+  user_id: string;
+  article_id: string;
+  created_at: string;
+}
+
+export interface Bookmark {
+  id: string;
+  user_id: string;
+  article_id: string;
   created_at: string;
 }
