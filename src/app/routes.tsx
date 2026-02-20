@@ -12,6 +12,8 @@ import ArticleList from "@/app/components/admin/ArticleList";
 import ArticleEditor from "@/app/components/admin/ArticleEditor";
 import ImageUploader from "@/app/components/admin/ImageUploader";
 import StatsPanel from "@/app/components/admin/StatsPanel";
+import CommentManagement from "@/app/components/admin/CommentManagement";
+import BlogSettings from "@/app/components/admin/BlogSettings";
 import ProtectedRoute from "@/app/components/ProtectedRoute";
 import AdminProtectedRoute from "@/app/components/AdminProtectedRoute";
 
@@ -80,11 +82,27 @@ export const router = createHashRouter([
           </AdminProtectedRoute>
         )
       },
-      { 
-        path: "stats", 
+      {
+        path: "stats",
         element: (
           <AdminProtectedRoute>
             <StatsPanel />
+          </AdminProtectedRoute>
+        )
+      },
+      {
+        path: "comments",
+        element: (
+          <AdminProtectedRoute>
+            <CommentManagement />
+          </AdminProtectedRoute>
+        )
+      },
+      {
+        path: "settings",
+        element: (
+          <AdminProtectedRoute>
+            <BlogSettings />
           </AdminProtectedRoute>
         )
       },

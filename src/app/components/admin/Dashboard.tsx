@@ -1,6 +1,6 @@
 import { motion } from "motion/react";
 import { Link, useNavigate } from "react-router";
-import { FileText, Users, MessageSquare, Eye, LogOut, Plus, BarChart3, PenTool } from "lucide-react";
+import { FileText, Users, MessageSquare, Eye, LogOut, Plus, BarChart3, PenTool, Settings, Image } from "lucide-react";
 import { useAuth } from "@/app/contexts/AuthContext";
 import { getAllArticles } from "@/services/articleService";
 import type { Article } from "@/types/database";
@@ -126,13 +126,47 @@ export default function Dashboard() {
                 <span className="font-medium">新建文章</span>
               </Link>
               <Link
-                to="/"
+                to="/admin/list"
                 className="flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
-                aria-label="返回首页"
+                aria-label="文章管理"
               >
                 <FileText className="w-5 h-5" />
-                <span className="font-medium">返回首页</span>
+                <span className="font-medium">文章管理</span>
               </Link>
+              <Link
+                to="/admin/comments"
+                className="flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                aria-label="评论管理"
+              >
+                <MessageSquare className="w-5 h-5" />
+                <span className="font-medium">评论管理</span>
+              </Link>
+              <Link
+                to="/admin/images"
+                className="flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                aria-label="媒体库"
+              >
+                <Image className="w-5 h-5" />
+                <span className="font-medium">媒体库</span>
+              </Link>
+              <Link
+                to="/admin/settings"
+                className="flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                aria-label="博客设置"
+              >
+                <Settings className="w-5 h-5" />
+                <span className="font-medium">博客设置</span>
+              </Link>
+              <div className="pt-4 mt-4 border-t border-gray-200 dark:border-gray-700">
+                <Link
+                  to="/"
+                  className="flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                  aria-label="返回首页"
+                >
+                  <Eye className="w-5 h-5" />
+                  <span className="font-medium">返回首页</span>
+                </Link>
+              </div>
             </nav>
           </div>
         </aside>
