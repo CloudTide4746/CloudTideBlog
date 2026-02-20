@@ -11,6 +11,7 @@ import {
   BookOpen,
   Bookmark,
   List,
+  FileText,
 } from "lucide-react";
 import {
   getArticleById,
@@ -19,7 +20,7 @@ import {
   getArticleStats,
 } from "@/services/articleService";
 import type { Article } from "@/types/database";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import CommentList from "./CommentList";
 import { useAuth } from "@/app/contexts/AuthContext";
 import MarkdownContent from "./MarkdownContent";
@@ -65,6 +66,31 @@ export default function ArticleDetail() {
     isBookmarked: false,
   });
   const [showToc, setShowToc] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  // Calculate word count and estimated reading time
+  const wordStats = useMemo(() => {
+    if (!article) return { words: 0, minutes: 0 };
+    const text = article.content.replace(/[#*_`\[\]()!]/g, '');
+    const words = text.length;
+    const minutes = Math.max(1, Math.ceil(words / 500)); // ~500 words per minute
+    return { words, minutes };
+  }, [article]);
+
+  // Track scroll progress
+  useEffect(() => {
+    const handleScroll = () => {
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      const scrollTop = window.scrollY;
+      const scrollable = documentHeight - windowHeight;
+      const progress = scrollable > 0 ? (scrollTop / scrollable) * 100 : 0;
+      setScrollProgress(Math.min(100, Math.max(0, progress)));
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     async function loadArticle() {
@@ -157,6 +183,17 @@ export default function ArticleDetail() {
 
   return (
     <div className='max-w-6xl mx-auto px-4 md:px-6 lg:px-8'>
+      {/* Reading Progress Bar */}
+      <div className='fixed top-0 left-0 right-0 z-50 h-1 bg-transparent'>
+        <motion.div
+          className='h-full bg-gradient-to-r from-amber-500 to-rose-500'
+          style={{ width: `${scrollProgress}%` }}
+          initial={{ width: 0 }}
+          animate={{ width: `${scrollProgress}%` }}
+          transition={{ duration: 0.1 }}
+        />
+      </div>
+
       {/* Main Content */}
       <div className='max-w-4xl lg:mr-64'>
         <motion.article
@@ -180,44 +217,64 @@ export default function ArticleDetail() {
             <motion.button
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className='lg:hidden flex items-center gap-2 mb-6 px-4 py-2 bg-amber-50 dark:bg-amber-900/30 rounded-lg text-amber-700 dark:text-amber-300'
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className='lg:hidden fixed bottom-20 right-4 z-40 flex items-center gap-2 px-4 py-3 bg-amber-500 hover:bg-amber-600 text-white rounded-full shadow-lg transition-colors'
               onClick={() => setShowToc(!showToc)}
             >
-              <List className='w-4 h-4' />
-              <span className='text-sm'>目录</span>
+              <List className='w-5 h-5' />
+              <span className='text-sm font-medium'>目录</span>
             </motion.button>
 
-            {/* Mobile TOC */}
+            {/* Mobile TOC Overlay */}
             {showToc && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                className='lg:hidden bg-gray-50 dark:bg-gray-800 rounded-lg p-4 mb-6'
-              >
-                <nav className='space-y-2'>
-                  {headings.map((heading) => (
-                    <motion.div
-                      key={heading.id}
-                      onClick={() => {
-                        const element = document.getElementById(heading.id);
-                        if (element) {
-                          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                          setShowToc(false);
-                        }
-                      }}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: heading.index * 0.03, duration: 0.2 }}
-                      className='block text-sm py-1.5 px-3 rounded-lg text-gray-600 dark:text-gray-400 hover:text-amber-600 dark:hover:text-amber-400 cursor-pointer'
-                      style={{ paddingLeft: `${heading.level * 12}px` }}
+              <>
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => setShowToc(false)}
+                  className='lg:hidden fixed inset-0 z-40 bg-black/30 backdrop-blur-sm'
+                />
+                <motion.div
+                  initial={{ opacity: 0, y: 100 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 100 }}
+                  transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                  className='lg:hidden fixed bottom-20 left-4 right-4 z-50 bg-white dark:bg-[#1a1a1a] rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden'
+                >
+                  <div className='p-4 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between'>
+                    <h3 className='text-lg font-semibold text-gray-900 dark:text-gray-100'>文章目录</h3>
+                    <button
+                      onClick={() => setShowToc(false)}
+                      className='text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
                     >
-                      {heading.text}
-                    </motion.div>
-                  ))}
-                </nav>
-              </motion.div>
+                      ✕
+                    </button>
+                  </div>
+                  <nav className='max-h-60 overflow-y-auto p-4 space-y-1'>
+                    {headings.map((heading) => (
+                      <motion.div
+                        key={heading.id}
+                        onClick={() => {
+                          const element = document.getElementById(heading.id);
+                          if (element) {
+                            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            setShowToc(false);
+                          }
+                        }}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: heading.index * 0.03, duration: 0.2 }}
+                        className='block text-sm py-2 px-3 rounded-lg text-gray-600 dark:text-gray-400 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 cursor-pointer transition-colors'
+                        style={{ paddingLeft: `${heading.level * 12}px` }}
+                      >
+                        {heading.text}
+                      </motion.div>
+                    ))}
+                  </nav>
+                </motion.div>
+              </>
             )}
 
             {/* Header */}
@@ -273,6 +330,11 @@ export default function ArticleDetail() {
                 </span>
                 <span>·</span>
                 <span>{article.date}</span>
+                <span>·</span>
+                <span className='flex items-center gap-1'>
+                  <FileText className='w-4 h-4' />
+                  {wordStats.words} 字
+                </span>
               </motion.div>
             </header>
 

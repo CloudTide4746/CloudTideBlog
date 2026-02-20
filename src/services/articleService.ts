@@ -77,6 +77,24 @@ export async function getAllCategories(): Promise<string[]> {
 }
 
 /**
+ * Get all unique tags
+ */
+export async function getAllTags(): Promise<string[]> {
+  const { data, error } = await supabase
+    .from('articles')
+    .select('tags')
+    .not('tags', 'is', null);
+
+  if (error) {
+    console.error('Error fetching tags:', error);
+    throw error;
+  }
+
+  const allTags = data?.flatMap((item) => item.tags || []) || [];
+  return Array.from(new Set(allTags)).sort();
+}
+
+/**
  * Create a new article (for admin functionality)
  */
 export async function createArticle(article: {

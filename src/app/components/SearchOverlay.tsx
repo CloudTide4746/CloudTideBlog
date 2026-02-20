@@ -5,6 +5,27 @@ import { searchArticles } from "@/services/articleService";
 import type { Article } from "@/types/database";
 import { Link } from "react-router";
 
+// Highlight search query in text
+function HighlightText({ text, query }: { text: string; query: string }) {
+  if (!query.trim()) return <>{text}</>;
+
+  const parts = text.split(new RegExp(`(${query})`, 'gi'));
+
+  return (
+    <>
+      {parts.map((part, i) =>
+        part.toLowerCase() === query.toLowerCase() ? (
+          <mark key={i} className="bg-amber-200 dark:bg-amber-600/50 text-amber-900 dark:text-amber-100 rounded px-0.5">
+            {part}
+          </mark>
+        ) : (
+          part
+        )
+      )}
+    </>
+  );
+}
+
 export function SearchOverlay({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Article[]>([]);
@@ -94,10 +115,10 @@ export function SearchOverlay({ isOpen, onClose }: { isOpen: boolean; onClose: (
                       className="group block p-6 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors border border-transparent hover:border-gray-100 dark:hover:border-gray-700"
                     >
                       <h3 className="text-xl font-medium text-gray-900 dark:text-gray-100 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
-                        {article.title}
+                        <HighlightText text={article.title} query={query} />
                       </h3>
                       <p className="mt-2 text-gray-500 dark:text-gray-400 line-clamp-2">
-                        {article.excerpt}
+                        <HighlightText text={article.excerpt} query={query} />
                       </p>
                       <div className="mt-4 flex items-center gap-4 text-sm text-gray-400">
                         <span>{article.date}</span>
