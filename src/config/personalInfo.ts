@@ -7,11 +7,11 @@ export const personalInfo: PersonalInfo = {
   keywords: "博客, 文学, 编程, 生活记录, 前端开发",
   avatar_url: "/CloudTideBlog/avatar.jpg",
   bio: "一个对前端技术保持热情的大学生，就读于北京邮电大学2025级电子信息类",
-  about: `你好！我是一名热爱生活的文字工作者和前端开发者。在代码与文字之间，我找到了表达自我的最佳方式。
+  about: `你好！我是一名热爱前端开发的大学生，就读于北京邮电大学2025级电子信息类。
 
-这个博客是我记录生活、分享思考的小天地。我相信，每一个平凡的日子里都藏着诗意，每一次键盘的敲击都在编织着故事。
+我擅长前端开发，熟悉 React、Next.js、HTML、CSS 和 JavaScript。代码是我的画笔，屏幕是我的画布，每一次构建都是一次创作的旅程。
 
-我喜欢用文字捕捉生活中的美好瞬间，也热衷于探索最新的前端技术。在这里，文艺与技术并不矛盾，它们共同构成了我的世界。`,
+阅读与编程是我的两大爱好，在代码的逻辑与文字的韵律之间，我找到了平衡。一杯咖啡，一段音乐，一本书，一串代码，这就是我理想的生活状态。`,
   social_links: [
     {
       label: "邮箱",
@@ -70,7 +70,7 @@ export const personalInfo: PersonalInfo = {
       description: "在山川中寻找灵感",
     },
   ],
-  motto: "生活不止眼前的苟且，还有诗和远方。",
+  motto: "漫漫长路，原作清风伴君途",
   tech_stack: {
     frontend: ["React", "TypeScript", "Vite", "Tailwind CSS", "React Router", "C++", "Next.js", "Zustand", "React Query"],
     backend: ["Supabase", "Python", "PostgreSQL"],
