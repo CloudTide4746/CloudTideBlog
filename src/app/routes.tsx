@@ -3,6 +3,7 @@ import Root from "@/app/components/Root";
 import Home from "@/app/components/Home";
 import ArticleDetail from "@/app/components/ArticleDetail";
 import About from "@/app/components/About";
+import Portfolio from "@/app/components/Portfolio";
 import NotFound from "@/app/components/NotFound";
 import Login from "@/app/components/Login";
 import Register from "@/app/components/Register";
@@ -30,6 +31,7 @@ export const router = createHashRouter([
       { index: true, Component: Home },
       { path: "article/:id", Component: ArticleDetail },
       { path: "about", Component: About },
+      { path: "portfolio", Component: Portfolio },
       { path: "*", Component: NotFound },
     ],
   },

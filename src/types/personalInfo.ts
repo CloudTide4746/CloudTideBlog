@@ -10,6 +10,8 @@ export interface PersonalInfo {
   interests: Interest[];
   motto: string;
   tech_stack: TechStack;
+  portfolio?: PortfolioProject[];
+  donation?: DonationConfig;
 }
 
 export interface SocialLink {
@@ -28,4 +30,19 @@ export interface TechStack {
   frontend: string[];
   backend: string[];
   tools: string[];
+}
+
+export interface PortfolioProject {
+  name: string;
+  description: string;
+  image?: string;
+  techStack: string[];
+  demoUrl?: string;
+  repoUrl?: string;
+}
+
+export interface DonationConfig {
+  enabled: boolean;
+  qrcode?: string;
+  description?: string;
 }

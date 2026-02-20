@@ -1,19 +1,26 @@
 import { Link, useLocation } from "react-router";
-import { Moon, Sun, User, Search } from "lucide-react";
+import { Moon, Sun, User, Search, Home, Info, Globe } from "lucide-react";
 import { useTheme } from "@/app/contexts/ThemeContext";
 import { motion } from "motion/react";
 import { personalInfo } from "@/config/personalInfo";
 import { useState } from "react";
 import { SearchOverlay } from "./SearchOverlay";
+import { useI18n } from "@/app/i18n/I18nContext";
 
 export default function Navbar() {
   const { theme, toggleTheme } = useTheme();
+  const { language, setLanguage, t } = useI18n();
   const location = useLocation();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
+  const toggleLanguage = () => {
+    setLanguage(language === 'zh' ? 'en' : 'zh');
+  };
+
   const navLinks = [
-    { path: "/", label: "首页" },
-    { path: "/about", label: "关于" },
+    { path: "/", label: t('home') },
+    { path: "/about", label: t('about') },
+    { path: "/portfolio", label: t('portfolio') },
   ];
 
   return (
@@ -50,7 +57,7 @@ export default function Navbar() {
                   <User className="w-5 h-5" />
                 </div>
               </motion.div>
-              <span>{personalInfo.title}</span>
+              <span className="hidden md:inline">{personalInfo.title}</span>
             </Link>
             <div className="hidden md:flex gap-6 ml-2">
               {navLinks.map((link) => (
@@ -94,7 +101,7 @@ export default function Navbar() {
               whileTap={{ scale: 0.95 }}
               onClick={toggleTheme}
               className="p-2 rounded-full hover:bg-gray-200/50 dark:hover:bg-gray-800/50 transition-colors"
-              aria-label="切换主题"
+              aria-label={t('toggleTheme')}
             >
               <motion.div
                 initial={false}
@@ -108,7 +115,52 @@ export default function Navbar() {
                 )}
               </motion.div>
             </motion.button>
+
+            {/* Language Toggle */}
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={toggleLanguage}
+              className="p-2 rounded-full hover:bg-gray-200/50 dark:hover:bg-gray-800/50 transition-colors"
+              aria-label="切换语言"
+            >
+              <Globe className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+            </motion.button>
           </div>
+        </div>
+      </motion.nav>
+
+      {/* Mobile Bottom Navigation */}
+      <motion.nav
+        initial={{ y: 100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="fixed bottom-0 left-0 right-0 z-50 md:hidden backdrop-blur-md bg-[#faf9f7]/95 dark:bg-[#1a1a1a]/95 border-t border-gray-200/50 dark:border-gray-800/50"
+      >
+        <div className="flex items-center justify-around px-4 py-3">
+          {navLinks.map((link) => (
+            <Link
+              key={link.path}
+              to={link.path}
+              className={`flex flex-col items-center gap-1 transition-colors ${
+                location.pathname === link.path
+                  ? "text-amber-600 dark:text-amber-400"
+                  : "text-gray-500 dark:text-gray-400"
+              }`}
+            >
+              <motion.div
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {link.path === "/" ? (
+                  <Home className={`w-6 h-6 ${location.pathname === link.path ? "fill-amber-600 dark:fill-amber-400" : ""}`} />
+                ) : (
+                  <Info className={`w-6 h-6 ${location.pathname === link.path ? "fill-amber-600 dark:fill-amber-400" : ""}`} />
+                )}
+              </motion.div>
+              <span className="text-xs font-medium">{link.label}</span>
+            </Link>
+          ))}
         </div>
       </motion.nav>
     </>
