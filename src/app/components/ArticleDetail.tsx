@@ -6,18 +6,23 @@ import {
   Clock,
   Tag,
   ArrowLeft,
+  ArrowRight,
   Heart,
   Share2,
   BookOpen,
   Bookmark,
   List,
   FileText,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import {
   getArticleById,
   toggleLike,
   toggleBookmark,
   getArticleStats,
+  getAdjacentArticles,
+  getRelatedArticles,
 } from "@/services/articleService";
 import type { Article } from "@/types/database";
 import { useState, useEffect, useMemo } from "react";
@@ -67,6 +72,8 @@ export default function ArticleDetail() {
   });
   const [showToc, setShowToc] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [adjacentArticles, setAdjacentArticles] = useState<{ prev: Article | null; next: Article | null }>({ prev: null, next: null });
+  const [relatedArticles, setRelatedArticles] = useState<Article[]>([]);
 
   // Calculate word count and estimated reading time
   const wordStats = useMemo(() => {
@@ -101,6 +108,16 @@ export default function ArticleDetail() {
 
         const statsData = await getArticleStats(id, user?.id);
         setStats(statsData);
+
+        // Load adjacent articles
+        const adjacent = await getAdjacentArticles(id);
+        setAdjacentArticles(adjacent);
+
+        // Load related articles by category
+        if (data) {
+          const related = await getRelatedArticles(id, data.category, 3);
+          setRelatedArticles(related);
+        }
       } catch (error) {
         console.error("Failed to load article:", error);
       } finally {
@@ -416,6 +433,54 @@ export default function ArticleDetail() {
               </div>
             </motion.div>
 
+            {/* Adjacent Articles Navigation */}
+            {(adjacentArticles.prev || adjacentArticles.next) && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.92 }}
+                className='my-12'
+              >
+                <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                  {/* Previous Article */}
+                  {adjacentArticles.prev && (
+                    <Link
+                      to={`/article/${adjacentArticles.prev.id}`}
+                      className='group flex items-center gap-4 p-4 rounded-xl bg-white dark:bg-[#242424] border border-gray-200 dark:border-gray-700 hover:border-amber-500 dark:hover:border-amber-500 transition-all shadow-sm hover:shadow-md'
+                    >
+                      <div className='flex-shrink-0 p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors'>
+                        <ChevronLeft className='w-5 h-5' />
+                      </div>
+                      <div className='flex-1 min-w-0'>
+                        <p className='text-xs text-gray-500 dark:text-gray-500 mb-1'>上一篇</p>
+                        <p className='text-sm font-medium text-gray-900 dark:text-gray-100 truncate group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors'>
+                          {adjacentArticles.prev.title}
+                        </p>
+                      </div>
+                    </Link>
+                  )}
+
+                  {/* Next Article */}
+                  {adjacentArticles.next && (
+                    <Link
+                      to={`/article/${adjacentArticles.next.id}`}
+                      className='group flex items-center gap-4 p-4 rounded-xl bg-white dark:bg-[#242424] border border-gray-200 dark:border-gray-700 hover:border-amber-500 dark:hover:border-amber-500 transition-all shadow-sm hover:shadow-md'
+                    >
+                      <div className='flex-1 min-w-0 text-right'>
+                        <p className='text-xs text-gray-500 dark:text-gray-500 mb-1'>下一篇</p>
+                        <p className='text-sm font-medium text-gray-900 dark:text-gray-100 truncate group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors'>
+                          {adjacentArticles.next.title}
+                        </p>
+                      </div>
+                      <div className='flex-shrink-0 p-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors'>
+                        <ChevronRight className='w-5 h-5' />
+                      </div>
+                    </Link>
+                  )}
+                </div>
+              </motion.div>
+            )}
+
             {/* Comments Section */}
             <motion.div
               initial={{ opacity: 0 }}
@@ -424,6 +489,50 @@ export default function ArticleDetail() {
             >
               {id && <CommentList articleId={id} />}
             </motion.div>
+
+            {/* Related Articles */}
+            {relatedArticles.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.98 }}
+                className='my-12'
+              >
+                <div className='flex items-center gap-4 mb-6'>
+                  <div className='h-px flex-1 bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-700 to-transparent' />
+                  <h3 className='text-lg font-serif text-gray-800 dark:text-gray-200 flex items-center gap-2'>
+                    <span className='w-2 h-2 rounded-full bg-amber-500' />
+                    相关文章
+                  </h3>
+                  <div className='h-px flex-1 bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-700 to-transparent' />
+                </div>
+                <div className='grid md:grid-cols-3 gap-4'>
+                  {relatedArticles.map((related) => (
+                    <Link
+                      key={related.id}
+                      to={`/article/${related.id}`}
+                      className='group block bg-white dark:bg-[#242424] rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 hover:border-amber-500 dark:hover:border-amber-500 transition-all shadow-sm hover:shadow-md'
+                    >
+                      <div className='h-32 overflow-hidden'>
+                        <img
+                          src={related.image}
+                          alt={related.title}
+                          className='w-full h-full object-cover group-hover:scale-110 transition-transform duration-500'
+                        />
+                      </div>
+                      <div className='p-4'>
+                        <span className='inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 mb-2'>
+                          {related.category}
+                        </span>
+                        <h4 className='text-sm font-medium text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors'>
+                          {related.title}
+                        </h4>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </motion.div>
+            )}
 
             {/* Footer */}
             <motion.footer

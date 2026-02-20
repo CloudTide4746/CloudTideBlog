@@ -1,11 +1,12 @@
 import { motion, AnimatePresence } from "motion/react";
-import { MessageSquare, Reply, User, Trash2, AtSign } from "lucide-react";
+import { MessageSquare, Reply, User, Trash2, AtSign, Heart } from "lucide-react";
 import { useState, useEffect } from "react";
 import {
   getNestedComments,
   createComment,
   deleteComment as deleteCommentService,
   subscribeToComments,
+  toggleCommentLike,
 } from "@/services/commentService";
 import type { Comment } from "@/services/commentService";
 import { useAuth } from "@/app/contexts/AuthContext";
@@ -21,6 +22,8 @@ function CommentList({ articleId }: CommentListProps) {
   const [replyTo, setReplyTo] = useState<string | null>(null);
   const [replyContent, setReplyContent] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  // 点赞状态存储
+  const [commentLikes, setCommentLikes] = useState<Record<string, { count: number; isLiked: boolean }>>({});
   // 署名状态
   const [nickname, setNickname] = useState("");
   const [newCommentContent, setNewCommentContent] = useState("");
@@ -105,6 +108,33 @@ function CommentList({ articleId }: CommentListProps) {
     }
   };
 
+  const handleCommentLike = async (commentId: string) => {
+    const currentLike = commentLikes[commentId] || { count: 0, isLiked: false };
+
+    // Optimistic update
+    setCommentLikes(prev => ({
+      ...prev,
+      [commentId]: {
+        count: currentLike.isLiked ? currentLike.count - 1 : currentLike.count + 1,
+        isLiked: !currentLike.isLiked
+      }
+    }));
+
+    try {
+      await toggleCommentLike(commentId);
+    } catch (error) {
+      // Revert on error
+      setCommentLikes(prev => ({
+        ...prev,
+        [commentId]: currentLike
+      }));
+    }
+  };
+
+  const getLikeInfo = (commentId: string) => {
+    return commentLikes[commentId] || { count: 0, isLiked: false };
+  };
+
   const renderComment = (comment: Comment, depth = 0): React.ReactNode => {
     const isOwner = user?.id === comment.user_id;
     const isReplying = replyTo === comment.id;
@@ -165,6 +195,21 @@ function CommentList({ articleId }: CommentListProps) {
           {/* Reply Actions */}
           {!isReplying && (
             <div className="flex items-center gap-2">
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => handleCommentLike(comment.id)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition-colors ${
+                  getLikeInfo(comment.id).isLiked
+                    ? "bg-rose-100 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400"
+                    : "bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+                }`}
+                aria-label="点赞评论"
+              >
+                <Heart className={`w-3.5 h-3.5 ${getLikeInfo(comment.id).isLiked ? "fill-current" : ""}`} />
+                <span>{getLikeInfo(comment.id).count > 0 ? getLikeInfo(comment.id).count : "赞"}</span>
+              </motion.button>
+
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}

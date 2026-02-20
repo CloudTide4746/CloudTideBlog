@@ -19,6 +19,48 @@ export async function getAllArticles(): Promise<Article[]> {
 }
 
 /**
+ * Get adjacent articles (previous and next)
+ */
+export async function getAdjacentArticles(currentId: string): Promise<{ prev: Article | null; next: Article | null }> {
+  const { data: allArticles, error } = await supabase
+    .from('articles')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching adjacent articles:', error);
+    return { prev: null, next: null };
+  }
+
+  const currentIndex = allArticles.findIndex(a => a.id === currentId);
+
+  return {
+    prev: currentIndex < allArticles.length - 1 ? allArticles[currentIndex + 1] : null,
+    next: currentIndex > 0 ? allArticles[currentIndex - 1] : null,
+  };
+}
+
+/**
+ * Get related articles by category
+ */
+export async function getRelatedArticles(currentId: string, category: string, limit: number = 3): Promise<Article[]> {
+  const { data, error } = await supabase
+    .from('articles')
+    .select('*')
+    .eq('category', category)
+    .neq('id', currentId)
+    .order('created_at', { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    console.error('Error fetching related articles:', error);
+    return [];
+  }
+
+  return data || [];
+}
+
+/**
  * Get a single article by ID
  */
 export async function getArticleById(id: string): Promise<Article | null> {

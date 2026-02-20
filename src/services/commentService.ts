@@ -10,6 +10,8 @@ export interface Comment {
   created_at: string;
   updated_at: string;
   children?: Comment[];
+  likes_count?: number;
+  is_liked?: boolean;
 }
 
 /**
@@ -195,4 +197,50 @@ export function subscribeToComments(
       callback
     )
     .subscribe();
+}
+
+/**
+ * Toggle like on a comment (no login required, uses IP)
+ */
+export async function toggleCommentLike(commentId: string): Promise<boolean> {
+  const ipAddress = 'anonymous';
+
+  const { data: existing } = await supabase
+    .from('comment_likes')
+    .select('id')
+    .eq('comment_id', commentId)
+    .eq('ip_address', ipAddress)
+    .single();
+
+  if (existing) {
+    await supabase.from('comment_likes').delete().eq('id', existing.id);
+    return false;
+  } else {
+    await supabase.from('comment_likes').insert({ comment_id: commentId, ip_address: ipAddress });
+    return true;
+  }
+}
+
+/**
+ * Get comment with like info
+ */
+export async function getCommentWithLikes(commentId: string) {
+  const ipAddress = 'anonymous';
+
+  const { count: likesCount } = await supabase
+    .from('comment_likes')
+    .select('*', { count: 'exact', head: true })
+    .eq('comment_id', commentId);
+
+  const { data: like } = await supabase
+    .from('comment_likes')
+    .select('id')
+    .eq('comment_id', commentId)
+    .eq('ip_address', ipAddress)
+    .single();
+
+  return {
+    likesCount: likesCount || 0,
+    isLiked: !!like
+  };
 }
