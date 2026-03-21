@@ -1,4 +1,4 @@
-export interface PersonalInfo {
+﻿export interface PersonalInfo {
   name: string;
   title: string;
   description: string;
@@ -12,6 +12,7 @@ export interface PersonalInfo {
   tech_stack: TechStack;
   portfolio?: PortfolioProject[];
   donation?: DonationConfig;
+  friends_links?: FriendsLink[];
 }
 
 export interface SocialLink {
@@ -45,4 +46,11 @@ export interface DonationConfig {
   enabled: boolean;
   qrcode?: string;
   description?: string;
+}
+
+export interface FriendsLink {
+  name: string;
+  description: string;
+  avatar: string;
+  url: string;
 }

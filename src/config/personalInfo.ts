@@ -1,20 +1,18 @@
-import type { PersonalInfo } from "@/types/personalInfo";
+﻿import type { PersonalInfo } from "@/types/personalInfo";
 
 export const personalInfo: PersonalInfo = {
-  name: "晚风拾云",
-  title: "晚风拾云的博客",
-  description: "漫漫长路，原作清风伴君途",
-  keywords: "博客, 文学, 编程, 生活记录, 前端开发",
+  name: "鏅氶鎷句簯",
+  title: "鏅氶鎷句簯鐨勫崥瀹?,
+  description: "婕极闀胯矾锛屽師浣滄竻椋庝即鍚涢€?,
+  keywords: "鍗氬, 鏂囧, 缂栫▼, 鐢熸椿璁板綍, 鍓嶇寮€鍙?,
   avatar_url: "/CloudTideBlog/avatar.jpg",
-  bio: "一个对前端技术保持热情的大学生，就读于北京邮电大学2025级电子信息类",
-  about: `你好！我是一名热爱前端开发的大学生，就读于北京邮电大学2025级电子信息类。
-
-我擅长前端开发，熟悉 React、Next.js、HTML、CSS 和 JavaScript。代码是我的画笔，屏幕是我的画布，每一次构建都是一次创作的旅程。
-
-阅读与编程是我的两大爱好，在代码的逻辑与文字的韵律之间，我找到了平衡。一杯咖啡，一段音乐，一本书，一串代码，这就是我理想的生活状态。`,
+  bio: "涓€涓鍓嶇鎶€鏈繚鎸佺儹鎯呯殑澶у鐢燂紝灏辫浜庡寳浜偖鐢靛ぇ瀛?025绾х數瀛愪俊鎭被",
+  about: `浣犲ソ锛佹垜鏄竴鍚嶇儹鐖卞墠绔紑鍙戠殑澶у鐢燂紝灏辫浜庡寳浜偖鐢靛ぇ瀛?025绾х數瀛愪俊鎭被銆?
+鎴戞搮闀垮墠绔紑鍙戯紝鐔熸倝 React銆丯ext.js銆丠TML銆丆SS 鍜?JavaScript銆備唬鐮佹槸鎴戠殑鐢荤瑪锛屽睆骞曟槸鎴戠殑鐢诲竷锛屾瘡涓€娆℃瀯寤洪兘鏄竴娆″垱浣滅殑鏃呯▼銆?
+闃呰涓庣紪绋嬫槸鎴戠殑涓ゅぇ鐖卞ソ锛屽湪浠ｇ爜鐨勯€昏緫涓庢枃瀛楃殑闊靛緥涔嬮棿锛屾垜鎵惧埌浜嗗钩琛°€備竴鏉挅鍟★紝涓€娈甸煶涔愶紝涓€鏈功锛屼竴涓蹭唬鐮侊紝杩欏氨鏄垜鐞嗘兂鐨勭敓娲荤姸鎬併€俙,
   social_links: [
     {
-      label: "邮箱",
+      label: "閭",
       url: "mailto:guhunnb@gmail.com",
       icon: "Mail",
     },
@@ -29,51 +27,52 @@ export const personalInfo: PersonalInfo = {
       icon: "Twitter",
     },
     {
-      label: "微信",
+      label: "寰俊",
       url: "https://weixin.qq.com/",
       icon: "MessageCircle",
     },
     {
-      label: "B站",
+      label: "B绔?,
       url: "https://space.bilibili.com/476878530",
       icon: "PlayCircle",
     },
   ],
   interests: [
     {
-      icon: "📚",
-      title: "阅读",
-      description: "在书海中遨游",
+      icon: "馃摎",
+      title: "闃呰",
+      description: "鍦ㄤ功娴蜂腑閬ㄦ父",
     },
     {
-      icon: "✍️",
-      title: "乒乓球",
+      icon: "鉁嶏笍",
+      title: "涔掍箵鐞?,
     },
     {
-      icon: "💻",
-      title: "编程",
-      description: "用代码创造美好",
+      icon: "馃捇",
+      title: "缂栫▼",
+      description: "鐢ㄤ唬鐮佸垱閫犵編濂?,
     },
     {
-      icon: "🎨",
-      title: "设计",
-      description: "追求视觉之美",
+      icon: "馃帹",
+      title: "璁捐",
+      description: "杩芥眰瑙嗚涔嬬編",
     },
     {
-      icon: "☕",
-      title: "咖啡",
-      description: "享受慢生活",
+      icon: "鈽?,
+      title: "鍜栧暋",
+      description: "浜彈鎱㈢敓娲?,
     },
     {
-      icon: "🌿",
-      title: "自然",
-      description: "在山川中寻找灵感",
+      icon: "馃尶",
+      title: "鑷劧",
+      description: "鍦ㄥ北宸濅腑瀵绘壘鐏垫劅",
     },
   ],
-  motto: "漫漫长路，原作清风伴君途",
+  motto: "婕极闀胯矾锛屽師浣滄竻椋庝即鍚涢€?,
   tech_stack: {
     frontend: ["React", "TypeScript", "Vite", "Tailwind CSS", "React Router", "C++", "Next.js", "Zustand", "React Query"],
     backend: ["Supabase", "Python", "PostgreSQL"],
     tools: ["Framer Motion", "Lucide Icons", "Radix UI"],
   },
 };
+

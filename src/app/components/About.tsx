@@ -1,5 +1,5 @@
-import { motion } from "motion/react";
-import { Mail, Github, Twitter, Heart, Coffee, User, LucideIcon, MessageCircle, PlayCircle } from "lucide-react";
+﻿import { motion } from "motion/react";
+import { Mail, Github, Twitter, Heart, Coffee, User, LucideIcon, MessageCircle, PlayCircle, Link2 } from "lucide-react";
 import { personalInfo } from "@/config/personalInfo";
 
 const iconMap: Record<string, LucideIcon> = {
@@ -93,11 +93,54 @@ export default function About() {
         </div>
       </motion.section>
 
+      {/* Friends Links */}
+      {personalInfo.friends_links && personalInfo.friends_links.length > 0 && (
+        <motion.section
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+        >
+          <h2 className="text-2xl font-serif mb-6 text-gray-900 dark:text-gray-100 flex items-center gap-2">
+            <Link2 className="w-6 h-6 text-amber-600" />
+            朋友们
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {personalInfo.friends_links.map((link, index) => (
+              <motion.a
+                key={link.name}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6 + index * 0.08 }}
+                whileHover={{ y: -4, scale: 1.02 }}
+                className="flex items-center gap-4 p-4 bg-white dark:bg-[#242424] rounded-xl shadow-md border border-gray-100 dark:border-gray-800 hover:shadow-lg transition-all group"
+              >
+                <img
+                  src={link.avatar}
+                  alt={link.name}
+                  className="w-14 h-14 rounded-full object-cover border-2 border-amber-100 dark:border-amber-900/50 flex-shrink-0"
+                />
+                <div className="min-w-0 flex-1">
+                  <h3 className="font-medium text-gray-900 dark:text-gray-100 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors truncate">
+                    {link.name}
+                  </h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
+                    {link.description}
+                  </p>
+                </div>
+              </motion.a>
+            ))}
+          </div>
+        </motion.section>
+      )}
+
       {/* Contact */}
       <motion.section
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.5 }}
+        transition={{ duration: 0.6, delay: 0.6 }}
         className="bg-gradient-to-br from-amber-50 to-rose-50 dark:from-amber-900/10 dark:to-rose-900/10 rounded-2xl p-8 md:p-10 border border-amber-100 dark:border-amber-900/30"
       >
         <h2 className="text-2xl font-serif mb-6 text-gray-900 dark:text-gray-100 text-center">
@@ -128,7 +171,7 @@ export default function About() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.8, delay: 0.7 }}
+        transition={{ duration: 0.8, delay: 0.8 }}
         className="text-center py-8"
       >
         <blockquote className="text-xl md:text-2xl font-serif text-gray-700 dark:text-gray-300 italic">

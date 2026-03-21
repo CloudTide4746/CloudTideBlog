@@ -50,7 +50,7 @@ function CommentList({ articleId }: CommentListProps) {
           prev.map((c) => (c.id === payload.new.id ? payload.new as Comment : c))
         );
       } else if (payload.eventType === "DELETE") {
-        setComments((prev) => prev.filter((c) => c.id !== (payload.old as any)?.id));
+        setComments((prev) => prev.filter((c) => c.id !== (payload.old as Comment)?.id));
       }
     });
 

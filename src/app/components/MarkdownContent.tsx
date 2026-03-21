@@ -116,7 +116,7 @@ export default function MarkdownContent({ content }: { content: string }) {
           li: ({ children }) => (
             <li className="leading-relaxed">{children}</li>
           ),
-          code: ({ node, inline, className, children, ...props }: any) => {
+          code: ({  inline, className, children, ...props }: any) => {
             if (inline) {
               return (
                 <code
