@@ -1,0 +1,24 @@
+{
+  "name": "晚风拾云的博客",
+  "short_name": "CloudTideBlog",
+  "description": "漫漫长路，原作清风伴君途 - 个人博客",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#faf9f7",
+  "theme_color": "#f59e0b",
+  "icons": [
+    {
+      "src": "/CloudTideBlog/avatar.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "/CloudTideBlog/avatar.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ],
+  "categories": ["blog", "personal"],
+  "lang": "zh-CN",
+  "orientation": "portrait-primary"
+}
